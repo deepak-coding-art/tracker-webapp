@@ -1,0 +1,27 @@
+{
+  "name": "tracker-website",
+  "version": "1.0.0",
+  "description": "This project aims to develop a module which will track the real time position of an object along with its speed and direction of its motion. The module will be beneficial to track motion of vehicle and person and can be used as an anti-theft and a safety device. The module will continuously track the position of the object and feed the data on its server. These data can be easily accessed through any smartphone or Computer.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deepak-coding-art/tracker-app.git"
+  },
+  "keywords": [
+    "tracker",
+    "web-app",
+    "ev",
+    "cars",
+    "bikes",
+    "iot"
+  ],
+  "author": "Deepak Meena",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deepak-coding-art/tracker-app/issues"
+  },
+  "homepage": "https://github.com/deepak-coding-art/tracker-app#readme"
+}
