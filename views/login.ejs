@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker | Login</title>
+    <style>
+        html {
+    
+            background-image: url("images/background.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+    
+        .body-content {
+            padding-top: 20vh;
+        }
+    
+        .container {
+            width: 300px;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            border: 2px solid White;
+            border-radius: 15px;
+            background: white;
+        }
+    
+        .logo {
+            margin-bottom: 15px;
+            margin-top: 0px;
+            padding-top: 0;
+        }
+    
+        .logo img {
+            width: 150px;
+            margin: 10px;
+            border-radius: 50px;
+        }
+    
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .form-item {
+            margin: 5px;
+            padding-bottom: 10px;
+            display: flex;
+        }
+    
+        .form-item label {
+            display: block;
+            padding: 2px;
+            font-size: 20px;
+            width: 100px;
+        }
+    
+        .form-item input {
+            width: 270px;
+            height: 35px;
+            border: 2px solid #e1dede69;
+            border-radius: 20px;
+            background: #e1dede69;
+            color: grey;
+            padding-left: 10px;
+        }
+    
+        .form-btns {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            padding: 10px 0;
+        }
+    
+        .form-btns button {
+            margin: auto;
+            font-size: 20px;
+            padding: 5px 15px;
+            border: 2px solid;
+            border-radius: 15px;
+            color: white;
+            background: #178cc6;
+            width: 230px;
+            cursor: pointer;
+        }
+    
+        .options {
+            padding-top: 15px;
+            margin: auto;
+        }
+    
+        .options a {
+            text-decoration: none;
+            color: black;
+            margin: 0 40px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+    
+        }
+    
+        .options a:hover {
+            color: grey;
+    
+        }
+    
+        p {
+            text-align: center;
+            font-size: 10px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    
+        .messages {
+            align-items: center;
+            color: red;
+            padding: 0;
+            padding-bottom: 0.2rem;
+            margin: 0;
+            font-size: 1rem;
+        }
+    </style>
+    </head>
+    
+    <body>
+        <div class="body-content">
+            <div class="container">
+                <div class="logo">
+                    <img src="images/logo.png" alt="App Logo" srcset="">
+                </div>
+                <p class="messages"><%= message %></p>
+                <div class="login-form">
+                    <form action="/login" method="post">
+                        <div class="form-item">
+                            <input type="text" name="deviceId" id="deviceId" placeholder="Device ID">
+                        </div>
+                        
+                        <div class="form-item">
+                            <input type="password" name="password" id="Password" placeholder="Password">
+                        </div>
+                        
+                        <div class="form-btns">
+                            <button type="submit">Login</button>
+                            <!--
+                            <div class="options"> <a href="./index.html">Cancel</a> </div>
+                            -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+    </html>
