@@ -29,13 +29,16 @@ app.get("/", async (req,res) => {
 app.post("/api/:id" , async (req, res) => {
     let validId = await validateId(req.params.id);
     if(!validId) {
-        return res.status(400).send("Invalid ID.");
+        return res.status(400).send("Invalid ID/Password.");
     }
     let validData = await validateData(req.body);
     if(!validData){
         return res.status(400).send("Invalid data.");
     }
-
+    let validPassword = validatePassword(req.body.pub_key)
+    if(!validPassword){
+        return res.status(400).send("Invalid ID/Password.")
+    }
     dummyData = req.body
     dummyData.time = Math.round(Date.now()/1000)
     res.status(200).send("Ok");
@@ -57,7 +60,17 @@ function validateData(deviceData){
             return false;
         }
     }
+    if(deviceData.id != dummyData.id){
+        return false
+    }
     return true;
+}
+
+function validatePassword(devicePassword){
+    if(devicePassword != dummyData.pub_key){
+        return false
+    }
+    return true
 }
 
 // Start server on the port
