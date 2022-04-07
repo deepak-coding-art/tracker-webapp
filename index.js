@@ -5,6 +5,7 @@ const app = express();
 // Use some middleware functions
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({limit: "1mb"}));
+app.set('view engine', 'ejs');
 
 // dummy data for the api
 let dummyData = {

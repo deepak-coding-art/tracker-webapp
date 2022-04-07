@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/deepak-coding-art/tracker-app#readme",
   "dependencies": {
+    "ejs": "^3.1.6",
     "express": "^4.17.3"
   },
   "devDependencies": {
