@@ -23,5 +23,11 @@
   "bugs": {
     "url": "https://github.com/deepak-coding-art/tracker-app/issues"
   },
-  "homepage": "https://github.com/deepak-coding-art/tracker-app#readme"
+  "homepage": "https://github.com/deepak-coding-art/tracker-app#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
