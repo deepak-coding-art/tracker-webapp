@@ -25,6 +25,15 @@ app.get("/", async (req,res) => {
     res.status(200).send(dummyData);
 })
 
+// Api get route 
+app.get("/api/:id", async (req, res) => {
+    let validId = await validateId(req.params.id);
+    if(!validId) {
+        return res.status(400).send("Invalid ID/Password.");
+    }
+    return res.status(200).json(dummyData);
+})
+
 // Api posting route
 app.post("/api/:id" , async (req, res) => {
     let validId = await validateId(req.params.id);
