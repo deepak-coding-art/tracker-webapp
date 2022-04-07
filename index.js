@@ -22,6 +22,12 @@ let dummyData = {
     "pub_key":"sl093nap8d"
 }
 
+// dummy device list
+let deviceList = {
+    "deviceId": "",
+    "password": ""
+}
+
 // temporary home route
 app.get("/", async (req,res) => {
     res.status(200).send(dummyData);
@@ -30,6 +36,16 @@ app.get("/", async (req,res) => {
 // Login routes
 app.get("/login", async (req, res) => {
     res.status(200).render("login", {message: ""});
+})
+
+// Login post
+app.post("/login", async (req, res) => {
+    let validDevice = await validateDevice(req.body);
+    if(!validDevice){
+        return res.status(200).render("login", {message: "Invalid ID/Password"});
+    }
+    deviceList = req.body;
+    return res.status(200).redirect("/");
 })
 
 // Api get route 
@@ -87,6 +103,13 @@ function validatePassword(devicePassword){
         return false
     }
     return true
+}
+
+function validateDevice(loginData) {
+    if(loginData.deviceId != dummyData.id || loginData.password != dummyData.pub_key){
+        return false;
+    }
+    return true;
 }
 
 // Start server on the port
