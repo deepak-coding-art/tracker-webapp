@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker | Home</title>
+    <!-- Font Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!--Leaflet map style-->>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+    <!-- Style Sheet -->
+    <style>
+        html {
+  background-image: url("./images/main-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  font-family: "Poppins", sans-serif;
+}
+
+nav {
+  background: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+.nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+.nav-toggle {
+  font-size: 1.5rem;
+  color: hsl(205, 78%, 60%);
+  background: transparent;
+  border-color: transparent;
+  transition: all 0.3s linear;
+  cursor: pointer;
+  transform: rotate(0deg);
+}
+
+.logo {
+  height: 40px;
+}
+.links a {
+  color: hsl(209, 34%, 30%);
+  text-decoration: none;
+  font-size: 1rem;
+  text-transform: capitalize;
+  letter-spacing: 0.1rem;
+  display: block;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s linear;
+}
+.links a:hover {
+  background: hsl(205, 86%, 81%);
+  color: hsl(205, 78%, 60%);
+  padding-left: 1.5rem;
+}
+.social-icons {
+  display: none;
+}
+.links {
+  height: 0;
+  overflow: hidden;
+  transition: all 0.3s linear;
+  list-style: none;
+}
+.show-links {
+  height: 6rem;
+}
+
+.nav-toggle-rot {
+  transform: rotate(90deg);
+}
+
+@media screen and (min-width: 800px) {
+  .nav-center {
+    max-width: 1170px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+  .nav-header {
+    padding: 0;
+  }
+  .nav-toggle {
+    display: none;
+  }
+  .links {
+    height: auto;
+    display: flex;
+  }
+  .links a {
+    padding: 0;
+    margin: 0 0.5rem;
+    font-weight: 400;
+  }
+  .links a:hover {
+    padding: 0;
+    background: transparent;
+  }
+  .social-icons {
+    display: flex;
+  }
+  .social-icons a {
+    margin: 0 0.5rem;
+    color: hsl(205, 78%, 60%);
+    transition: all 0.3s linear;
+  }
+  .social-icons a:hover {
+    color: hsl(205, 90%, 76%);
+  }
+}
+
+/* Map */
+
+#map {
+  height: 70vh;
+}
+
+/* speed monitor */
+#speed-monitor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 314159;
+  pointer-events: none;
+  font-size: 1rem;
+}
+
+    </style>
+</head>
+
+<body>
+
+    <head>
+        <header id="home">
+            <!-- navbar -->
+            <nav id="nav">
+                <div class="nav-center">
+                    <!-- nav header -->
+                    <div class="nav-header">
+                        <img src="./images/logo.png" class="logo" alt="logo" />
+                        <button class="nav-toggle">
+                            <i class="fas fa-bars">
+                                <img src="./images/list_logo.png" alt="">
+                            </i>
+                        </button>
+                    </div>
+                    <!-- links -->
+                    <div class="links-container">
+                        <ul class="links">
+                            <li>
+                                <a href="/login" class="scroll-link">change ID</a>
+                            </li>
+                            <li>
+                                <a href="/about" class="scroll-link">about</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- Map Div -->
+        <div id="map">
+            <div id="speed-monitor">
+                Device: <span id="deviceNameId"><%= devIce %></span> <br>
+                Speed: <span id="speed"></span> KM/h <br>
+                Last update: <br> <span id="lastTime"></span>
+            </div>
+        </div>
+    </head>
+    <script>
+        const navToggle = document.querySelector(".nav-toggle");
+            const links = document.querySelector(".links");
+            const speed = document.querySelector("#speed");
+            const lasTime = document.querySelector("#lastTime");
+            let deviceNameId = document.querySelector("#deviceNameId");
+
+            deviceNameId = deviceNameId.innerHTML;
+
+            /* Show Links */
+            navToggle.addEventListener("click", function () {
+                links.classList.toggle("show-links");
+                navToggle.classList.toggle("nav-toggle-rot");
+            });
+
+            /* Create Map */
+            const myMap = L.map('map', { zoomControl: true });
+
+            /* Remove zoom button in mobile browser */
+            if (L.Browser.mobile) {
+                myMap.removeControl(myMap.zoomControl);
+            }
+
+            /* Add tiles and attribution to Map */
+            const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+            const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+            const tiles = L.tileLayer(tileUrl, { attribution });
+            tiles.addTo(myMap);
+
+            /* Create marker */
+            const marker = L.marker([0, 0]).addTo(myMap);
+
+
+            /* get and show data */
+            let data;
+            let firstTime = true;
+            async function getData() {
+                await fetch("/api/"+ deviceNameId, { method: 'GET', redirect: 'follow', mode: "cors" }).then(async response => {
+                    if (response.redirected) {
+                        window.location.replace(response.url)
+                    }
+                    data = await response.json();
+                    if (firstTime) {
+                        myMap.setView([data.latitude, data.longitude], 15);
+                        firstTime = false;
+                    }
+                    marker.setLatLng([data.latitude, data.longitude]);
+                    speed.innerHTML = data.speed;
+                    var passedTime = millisecondsToStr(Date.now() - (data.time * 1000));
+                    lasTime.innerHTML = passedTime + " ago";
+                })
+                    .catch(function (err) {
+                        console.info(err);
+                    });;
+
+            }
+            getData()
+            setInterval(getData, 1000);
+
+
+            function millisecondsToStr(milliseconds) {
+                function numberEnding(number) {
+                    return (number > 1) ? 's' : '';
+                }
+
+                var temp = Math.floor(milliseconds / 1000);
+                var years = Math.floor(temp / 31536000);
+                if (years) {
+                    return years + ' year' + numberEnding(years);
+                }
+                //TODO: Months! Maybe weeks? 
+                var days = Math.floor((temp %= 31536000) / 86400);
+                if (days) {
+                    return days + ' day' + numberEnding(days);
+                }
+                var hours = Math.floor((temp %= 86400) / 3600);
+                if (hours) {
+                    return hours + ' hour' + numberEnding(hours);
+                }
+                var minutes = Math.floor((temp %= 3600) / 60);
+                if (minutes) {
+                    return minutes + ' minute' + numberEnding(minutes);
+                }
+                var seconds = temp % 60;
+                if (seconds) {
+                    return seconds + ' second' + numberEnding(seconds);
+                }
+                return 'less than a second'; //'just now' //or other string you like;
+            }
+    </script>
+</body>
+</html>

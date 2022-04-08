@@ -1,4 +1,5 @@
 // import modules
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
 
@@ -7,6 +8,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json({limit: "1mb"}));
 app.use( express.static( "public" ) );
 app.set('view engine', 'ejs');
+
+// Private key
+const jwtPrivateKey = "idmskj54#@$fincxzm2";
 
 // dummy data for the api
 let dummyData = {
@@ -30,7 +34,11 @@ let deviceList = {
 
 // temporary home route
 app.get("/", async (req,res) => {
-    res.status(200).send(dummyData);
+    res.status(200).render("home", {devIce: dummyData.id});
+})
+
+app.get("/about", async (req, res) => {
+    res.status(200).render("about")
 })
 
 // Login routes
@@ -45,7 +53,9 @@ app.post("/login", async (req, res) => {
         return res.status(200).render("login", {message: "Invalid ID/Password"});
     }
     deviceList = req.body;
-    return res.status(200).redirect("/");
+    const token = await jwt.sign({id: deviceList.deviceId}, jwtPrivateKey);
+    res.set("x-auth-token", token);
+    return res.redirect("/");
 })
 
 // Api get route 
@@ -74,6 +84,11 @@ app.post("/api/:id" , async (req, res) => {
     dummyData = req.body
     dummyData.time = Math.round(Date.now()/1000)
     res.status(200).send("Ok");
+})
+
+// All other routes 
+app.use(async (req, res) => {
+    res.status(404).render("404");
 })
 
 // Validation functions 
@@ -111,6 +126,19 @@ function validateDevice(loginData) {
     }
     return true;
 }
+
+// Authenticate function
+function auth(req, res, next){
+    const token = req.header('x-auth-token');
+    if(!token) return res.status(401).send("no token")//redirect("/login");
+    try{
+    const decode = jwt.verify(token, jwtPrivateKey);
+    req.user = decode;
+    next();
+    } catch (ex) {
+        return res.status(401).send("invalid token")//redirect("/login")
+    }
+} 
 
 // Start server on the port
 const port = process.env.PORT || 3500;
