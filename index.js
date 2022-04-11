@@ -55,9 +55,9 @@ app.post("/login", async (req, res) => {
         return res.status(200).render("login", {message: "Invalid ID/Password"});
     }
     deviceList = req.body;
-    const token = await jwt.sign({id: deviceList.deviceId}, jwtPrivateKey);
+    const token = await jwt.sign({id: deviceList.deviceId}, jwtPrivateKey, { expiresIn: '24h' });
     res.cookie("x-auth-token", token, {
-        maxAge: 5000,
+        maxAge: 86400000,
         httpOnly: true, // no client side js access
         // secure: true, // https only use it
         // domain: example.com
