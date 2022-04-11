@@ -66,7 +66,7 @@ app.post("/login", async (req, res) => {
 })
 
 // Api get route 
-app.get("/api/:id", async (req, res) => {
+app.get("/api/:id", validateUser, async (req, res) => {
     let validId = await validateId(req.params.id);
     if(!validId) {
         return res.status(400).send("Invalid ID/Password.");
@@ -143,13 +143,13 @@ function validateDevice(loginData) {
 // Authenticate function
 function validateUser(req, res, next){
     const token = req.cookies["x-auth-token"];
-    if(!token) return res.status(401).send("no token")//redirect("/login");
+    if(!token) return res.status(301).redirect("/login");
     try{
     const decode = jwt.verify(token, jwtPrivateKey);
     req.user = decode;
     next();
     } catch (ex) {
-        return res.status(401).send("invalid token")//redirect("/login")
+        return res.status(301).redirect("/login")
     }
 } 
 
