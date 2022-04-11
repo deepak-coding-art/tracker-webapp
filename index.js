@@ -1,9 +1,11 @@
 // import modules
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const express = require("express");
 const app = express();
 
 // Use some middleware functions
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({limit: "1mb"}));
 app.use( express.static( "public" ) );
@@ -33,11 +35,11 @@ let deviceList = {
 }
 
 // temporary home route
-app.get("/", async (req,res) => {
-    res.status(200).render("home", {devIce: dummyData.id});
+app.get("/", validateUser, async (req,res) => {
+    res.status(200).render("home", {devIce: req.user.id});
 })
 
-app.get("/about", async (req, res) => {
+app.get("/about", validateUser, async (req, res) => {
     res.status(200).render("about")
 })
 
@@ -54,8 +56,13 @@ app.post("/login", async (req, res) => {
     }
     deviceList = req.body;
     const token = await jwt.sign({id: deviceList.deviceId}, jwtPrivateKey);
-    res.set("x-auth-token", token);
-    return res.redirect("/");
+    res.cookie("x-auth-token", token, {
+        maxAge: 5000,
+        httpOnly: true, // no client side js access
+        // secure: true, // https only use it
+        // domain: example.com
+    })
+    return res.status(301).redirect("/");
 })
 
 // Api get route 
@@ -84,6 +91,12 @@ app.post("/api/:id" , async (req, res) => {
     dummyData = req.body
     dummyData.time = Math.round(Date.now()/1000)
     res.status(200).send("Ok");
+})
+
+// Logout route
+app.get("/logout", validateUser, (req, res) => {
+    res.clearCookie("x-auth-token");
+    res.redirect("/login");
 })
 
 // All other routes 
@@ -128,8 +141,8 @@ function validateDevice(loginData) {
 }
 
 // Authenticate function
-function auth(req, res, next){
-    const token = req.header('x-auth-token');
+function validateUser(req, res, next){
+    const token = req.cookies["x-auth-token"];
     if(!token) return res.status(401).send("no token")//redirect("/login");
     try{
     const decode = jwt.verify(token, jwtPrivateKey);
